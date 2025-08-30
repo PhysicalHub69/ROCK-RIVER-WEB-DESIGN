@@ -111,8 +111,8 @@ button:hover {transform:scale(1.05);}
 <button onclick="signUp()">Sign Up / Log In to Send Message</button>
 <div id="contactFormContainer" style="display:none;">
 <form id="contactForm">
-<input type="text" name="name" placeholder="Your Name" required>
-<input type="email" name="email" placeholder="Your Email" required>
+<input type="text" name="user_name" placeholder="Your Name" required>
+<input type="email" name="user_email" placeholder="Your Email" required>
 <textarea name="message" rows="5" placeholder="Your Message" required></textarea>
 <button type="submit" class="submit-btn">Send Message</button>
 </form>
@@ -124,7 +124,11 @@ button:hover {transform:scale(1.05);}
 &copy; 2025 Rock River Web Design. All rights reserved.
 </footer>
 
+<!-- Scripts -->
+<script src="https://cdn.emailjs.com/sdk/3.2/email.min.js"></script>
 <script>
+emailjs.init("R5uAj6jZhe8jEC8ep"); 
+
 // Scroll fade-in
 window.addEventListener('scroll', () => {
     document.querySelectorAll('.fade-in').forEach(el => {
@@ -137,7 +141,9 @@ window.addEventListener('scroll', () => {
 });
 
 // Dark Mode
-function toggleDarkMode(){document.body.classList.toggle('dark-mode');}
+function toggleDarkMode(){
+    document.body.classList.toggle('dark-mode');
+}
 
 // Local Storage Sign-Up/Login
 function signUp(){
@@ -155,16 +161,23 @@ function signUp(){
     }
 }
 
-// Contact Form Submission
+// Contact Form Submission via EmailJS
 document.getElementById('contactForm').addEventListener('submit', function(e){
     e.preventDefault();
+
     const member = localStorage.getItem('member');
-    if(member){
+    if(!member){
+        alert("You need to sign up or log in to send a message!");
+        return;
+    }
+
+    emailjs.sendForm('rockriver', 'template_kj5hq38', '#contactForm')
+    .then(() => {
         alert(`Thanks, ${member}! Your message has been sent!`);
         this.reset();
-    } else {
-        alert("You need to sign up to send a message!");
-    }
+    }, (err) => {
+        alert('Oops! Something went wrong: ' + JSON.stringify(err));
+    });
 });
 </script>
 
