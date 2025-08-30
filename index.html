@@ -125,7 +125,7 @@ button:hover {transform:scale(1.05);}
 </footer>
 
 <script type="module">
-  import emailjs from 'https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js';
+  import * as emailjs from 'https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js';
 
   emailjs.init("R5uAj6jZhe8jEC8ep");
 
@@ -170,3 +170,12 @@ button:hover {transform:scale(1.05);}
       });
   });
 </script>
+<div id="contactFormContainer" style="display:none;">
+  <form id="contactForm">
+    <input type="text" name="name" placeholder="Your Name" required>
+    <input type="email" name="email" placeholder="Your Email" required>
+    <textarea name="message" rows="5" placeholder="Your Message" required></textarea>
+    <button type="submit" class="submit-btn">Send Message</button>
+  </form>
+</div>
+    </body>
