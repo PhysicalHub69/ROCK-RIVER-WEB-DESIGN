@@ -125,61 +125,49 @@ button:hover {transform:scale(1.05);}
 </footer>
 
 <!-- Scripts -->
+<!-- EmailJS SDK -->
 <script src="https://cdn.emailjs.com/sdk/3.2/email.min.js"></script>
+
 <script>
-emailjs.init("R5uAj6jZhe8jEC8ep"); 
+  // Initialize EmailJS
+  emailjs.init("R5uAj6jZhe8jEC8ep"); // <-- Your Public Key
 
-// Scroll fade-in
-window.addEventListener('scroll', () => {
-    document.querySelectorAll('.fade-in').forEach(el => {
-        const rect = el.getBoundingClientRect();
-        if(rect.top < window.innerHeight - 50){
-            el.style.opacity = 1;
-            el.style.transform = 'translateY(0)';
-        }
-    });
-});
+  // Sign-Up / Login Logic
+  function signUp(){
+      const user = localStorage.getItem('member');
+      if(!user){
+          const username = prompt("Create a username:");
+          if(username){
+              localStorage.setItem('member', username);
+              alert(`Welcome, ${username}! You can now send messages.`);
+              document.getElementById('contactFormContainer').style.display = 'block';
+          }
+      } else {
+          alert(`Welcome back, ${user}!`);
+          document.getElementById('contactFormContainer').style.display = 'block';
+      }
+  }
 
-// Dark Mode
-function toggleDarkMode(){
-    document.body.classList.toggle('dark-mode');
-}
+  // Contact Form Submission
+  const contactForm = document.getElementById('contactForm');
+  contactForm.addEventListener('submit', function(e){
+      e.preventDefault(); // stop default submission
 
-// Local Storage Sign-Up/Login
-function signUp(){
-    const user = localStorage.getItem('member');
-    if(!user){
-        const username = prompt("Create a username:");
-        if(username){
-            localStorage.setItem('member', username);
-            alert(`Welcome, ${username}! You can now send messages.`);
-            document.getElementById('contactFormContainer').style.display = 'block';
-        }
-    } else {
-        alert(`Welcome back, ${user}!`);
-        document.getElementById('contactFormContainer').style.display = 'block';
-    }
-}
+      const member = localStorage.getItem('member');
+      if(!member){
+          alert("You need to sign up or log in to send a message!");
+          return;
+      }
 
-// Contact Form Submission via EmailJS
-document.getElementById('contactForm').addEventListener('submit', function(e){
-    e.preventDefault();
-
-    const member = localStorage.getItem('member');
-    if(!member){
-        alert("You need to sign up or log in to send a message!");
-        return;
-    }
-
-    emailjs.sendForm('rockriver', 'template_kj5hq38', '#contactForm')
-    .then(() => {
-        alert(`Thanks, ${member}! Your message has been sent!`);
-        this.reset();
-    }, (err) => {
-        alert('Oops! Something went wrong: ' + JSON.stringify(err));
-    });
-});
+      // Send email via EmailJS
+      emailjs.sendForm('rockriver', 'template_kj5hq38', '#contactForm')
+      .then((response) => {
+          console.log("EmailJS success:", response);
+          alert(`Thanks, ${member}! Your message has been sent!`);
+          contactForm.reset();
+      }, (error) => {
+          console.error("EmailJS error:", error); // <-- full details in console
+          alert('Oops! Something went wrong. Check console for details.');
+      });
+  });
 </script>
-
-</body>
-</html>
