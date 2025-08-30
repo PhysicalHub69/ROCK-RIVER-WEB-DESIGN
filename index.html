@@ -43,7 +43,7 @@ section h2 {font-size:2rem; margin-bottom:40px; text-align:center;}
 
 /* Contact */
 .contact-box {text-align:center;}
-#contactForm {display:flex; flex-direction:column; gap:15px; max-width:500px; margin:0 auto;}
+#contactForm {display:flex; flex-direction:column; gap:15px; max-width:500px; margin:20px auto;}
 input, textarea {padding:12px; border-radius:6px; border:1px solid #ccc; font-size:1rem; width:100%;}
 button.submit-btn {padding:15px; background:#39d353; color:#fff; font-weight:700; border:none; border-radius:6px; transition: background 0.2s;}
 button.submit-btn:hover {background:#2fb43f;}
@@ -111,8 +111,8 @@ button:hover {transform:scale(1.05);}
 <button onclick="signUp()">Sign Up / Log In to Send Message</button>
 <div id="contactFormContainer" style="display:none;">
 <form id="contactForm">
-<input type="text" name="user_name" placeholder="Your Name" required>
-<input type="email" name="user_email" placeholder="Your Email" required>
+<input type="text" name="name" placeholder="Your Name" required>
+<input type="email" name="email" placeholder="Your Email" required>
 <textarea name="message" rows="5" placeholder="Your Message" required></textarea>
 <button type="submit" class="submit-btn">Send Message</button>
 </form>
@@ -124,16 +124,23 @@ button:hover {transform:scale(1.05);}
 &copy; 2025 Rock River Web Design. All rights reserved.
 </footer>
 
-<script type="module">
-  import { init, sendForm } from 'https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js';
+<!-- EmailJS + JS Logic -->
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+<script>
+  // Initialize EmailJS
+  emailjs.init("R5uAj6jZhe8jEC8ep"); // Public key
 
-  init("R5uAj6jZhe8jEC8ep"); // <-- Public key
+  // Dark mode toggle
+  function toggleDarkMode() {
+      document.body.classList.toggle('dark-mode');
+  }
 
-  function signUp(){
+  // Sign-up / Login
+  function signUp() {
       const user = localStorage.getItem('member');
-      if(!user){
+      if (!user) {
           const username = prompt("Create a username:");
-          if(username){
+          if (username) {
               localStorage.setItem('member', username);
               alert(`Welcome, ${username}! You can now send messages.`);
               document.getElementById('contactFormContainer').style.display = 'block';
@@ -144,36 +151,38 @@ button:hover {transform:scale(1.05);}
       }
   }
 
-  window.addEventListener('DOMContentLoaded', () => {
-      const contactForm = document.getElementById('contactForm');
-      contactForm.addEventListener('submit', function(e){
-          e.preventDefault();
-          const member = localStorage.getItem('member');
-          if(!member){
-              alert("You need to sign up or log in to send a message!");
-              return;
-          }
+  // Contact Form Submission
+  const contactForm = document.getElementById('contactForm');
+  contactForm.addEventListener('submit', function(e) {
+      e.preventDefault();
+      const member = localStorage.getItem('member');
+      if (!member) {
+          alert("You need to sign up or log in to send a message!");
+          return;
+      }
 
-          sendForm('rockriver', 'template_kj5hq38', '#contactForm')
-          .then((response) => {
-              console.log("EmailJS success:", response);
-              alert(`Thanks, ${member}! Your message has been sent!`);
-              contactForm.reset();
-          })
-          .catch((error) => {
-              console.error("EmailJS error:", error);
-              alert('Oops! Something went wrong. Check console for details.');
-          });
-      });
+      emailjs.sendForm('rockriver', 'template_kj5hq38', '#contactForm')
+        .then(response => {
+            console.log("EmailJS success:", response);
+            alert(`Thanks, ${member}! Your message has been sent!`);
+            contactForm.reset();
+        })
+        .catch(error => {
+            console.error("EmailJS error:", error);
+            alert('Oops! Something went wrong. Check console for details.');
+        });
   });
 
+  // Scroll fade-in animation
+  window.addEventListener('scroll', () => {
+      document.querySelectorAll('.fade-in').forEach(el => {
+          const rect = el.getBoundingClientRect();
+          if (rect.top < window.innerHeight - 50) {
+              el.style.opacity = 1;
+              el.style.transform = 'translateY(0)';
+          }
+      });
+  });
 </script>
-<div id="contactFormContainer" style="display:none;">
-  <form id="contactForm">
-    <input type="text" name="name" placeholder="Your Name" required>
-    <input type="email" name="email" placeholder="Your Email" required>
-    <textarea name="message" rows="5" placeholder="Your Message" required></textarea>
-    <button type="submit" class="submit-btn">Send Message</button>
-  </form>
-</div>
-    </body>
+</body>
+</html>
