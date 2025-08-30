@@ -125,11 +125,10 @@ button:hover {transform:scale(1.05);}
 </footer>
 
 <script type="module">
-  import * as emailjs from 'https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js';
+  import { init, sendForm } from 'https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js';
 
-  emailjs.init("R5uAj6jZhe8jEC8ep");
+  init("R5uAj6jZhe8jEC8ep"); // <-- Public key
 
-  // Sign-Up / Login Logic
   function signUp(){
       const user = localStorage.getItem('member');
       if(!user){
@@ -145,19 +144,17 @@ button:hover {transform:scale(1.05);}
       }
   }
 
-  // Wait for DOM
   window.addEventListener('DOMContentLoaded', () => {
       const contactForm = document.getElementById('contactForm');
       contactForm.addEventListener('submit', function(e){
           e.preventDefault();
-
           const member = localStorage.getItem('member');
           if(!member){
               alert("You need to sign up or log in to send a message!");
               return;
           }
 
-          emailjs.sendForm('rockriver', 'template_kj5hq38', '#contactForm')
+          sendForm('rockriver', 'template_kj5hq38', '#contactForm')
           .then((response) => {
               console.log("EmailJS success:", response);
               alert(`Thanks, ${member}! Your message has been sent!`);
@@ -169,6 +166,7 @@ button:hover {transform:scale(1.05);}
           });
       });
   });
+
 </script>
 <div id="contactFormContainer" style="display:none;">
   <form id="contactForm">
