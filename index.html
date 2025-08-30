@@ -124,13 +124,10 @@ button:hover {transform:scale(1.05);}
 &copy; 2025 Rock River Web Design. All rights reserved.
 </footer>
 
-<!-- Scripts -->
-<!-- EmailJS SDK -->
-<script src="https://cdn.emailjs.com/sdk/3.2/email.min.js"></script>
+<script type="module">
+  import emailjs from 'https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js';
 
-<script>
-  // Initialize EmailJS
-  emailjs.init("R5uAj6jZhe8jEC8ep"); // <-- Your Public Key
+  emailjs.init("R5uAj6jZhe8jEC8ep");
 
   // Sign-Up / Login Logic
   function signUp(){
@@ -148,26 +145,28 @@ button:hover {transform:scale(1.05);}
       }
   }
 
-  // Contact Form Submission
-  const contactForm = document.getElementById('contactForm');
-  contactForm.addEventListener('submit', function(e){
-      e.preventDefault(); // stop default submission
+  // Wait for DOM
+  window.addEventListener('DOMContentLoaded', () => {
+      const contactForm = document.getElementById('contactForm');
+      contactForm.addEventListener('submit', function(e){
+          e.preventDefault();
 
-      const member = localStorage.getItem('member');
-      if(!member){
-          alert("You need to sign up or log in to send a message!");
-          return;
-      }
+          const member = localStorage.getItem('member');
+          if(!member){
+              alert("You need to sign up or log in to send a message!");
+              return;
+          }
 
-      // Send email via EmailJS
-      emailjs.sendForm('rockriver', 'template_kj5hq38', '#contactForm')
-      .then((response) => {
-          console.log("EmailJS success:", response);
-          alert(`Thanks, ${member}! Your message has been sent!`);
-          contactForm.reset();
-      }, (error) => {
-          console.error("EmailJS error:", error); // <-- full details in console
-          alert('Oops! Something went wrong. Check console for details.');
+          emailjs.sendForm('rockriver', 'template_kj5hq38', '#contactForm')
+          .then((response) => {
+              console.log("EmailJS success:", response);
+              alert(`Thanks, ${member}! Your message has been sent!`);
+              contactForm.reset();
+          })
+          .catch((error) => {
+              console.error("EmailJS error:", error);
+              alert('Oops! Something went wrong. Check console for details.');
+          });
       });
   });
 </script>
